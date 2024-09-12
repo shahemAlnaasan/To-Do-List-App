@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:todo_list_app/controller/todo_bloc/todo_bloc.dart';
 import 'package:todo_list_app/view/widgets/custom_button.dart';
 
 class DeleteTodo extends StatelessWidget {
-  const DeleteTodo({super.key});
+  final int index;
+  const DeleteTodo({super.key, required this.index});
 
   @override
   Widget build(BuildContext context) {
@@ -12,13 +15,23 @@ class DeleteTodo extends StatelessWidget {
       height: 160.sp,
       child: Column(
         children: [
-          const CustomButton(
+          CustomButton(
+            onTap: () {
+              context.read<TodoBloc>().add(DeleteTodosEvent(index: index));
+              Navigator.of(context).pushNamedAndRemoveUntil(
+                'homePage',
+                (route) => false,
+              );
+            },
             title: "Delete TODO",
             color: Colors.white,
-            textColor: Color(0xffF76C6A),
+            textColor: const Color(0xffF76C6A),
           ),
           SizedBox(height: 16.sp),
-          const CustomButton(
+          CustomButton(
+            onTap: () {
+              Navigator.pop(context);
+            },
             title: "Cancle",
             color: Colors.white,
             textColor: Colors.green,

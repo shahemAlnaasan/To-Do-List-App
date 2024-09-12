@@ -8,6 +8,9 @@ class CustomTextFormTodo extends StatelessWidget {
   final TextEditingController? controller;
   final bool? readOnly;
   final void Function()? onTap;
+  final TextInputType? keyboardType;
+  final Color? hintColor;
+  final Color? suffixIconColor;
 
   const CustomTextFormTodo({
     super.key,
@@ -17,11 +20,15 @@ class CustomTextFormTodo extends StatelessWidget {
     this.controller,
     this.readOnly,
     this.onTap,
+    this.keyboardType,
+    this.hintColor,
+    this.suffixIconColor,
   });
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+      keyboardType: keyboardType,
       style:
           TextStyle(color: Colors.white, fontFamily: "Body", fontSize: 16.sp),
       onTap: onTap,
@@ -33,19 +40,19 @@ class CustomTextFormTodo extends StatelessWidget {
       cursorColor: Colors.white,
       decoration: InputDecoration(
         suffixIcon: suffixIcon,
+        suffixIconColor: suffixIconColor,
         contentPadding: EdgeInsets.only(left: 16.sp, bottom: 13.sp, top: 13.sp),
         enabledBorder: OutlineInputBorder(
           borderSide: BorderSide(
-            width: 2.sp,
-            color: color ?? Colors.white,
-          ),
+              width: 2.sp,
+              color: color ?? const Color.fromARGB(112, 255, 255, 255)),
           borderRadius: BorderRadius.circular(12),
         ),
         fillColor: Colors.white,
         hintText: hint,
-        hintStyle: const TextStyle(
+        hintStyle: TextStyle(
           fontFamily: "Body",
-          color: Colors.white,
+          color: hintColor ?? Colors.white,
         ),
         focusedBorder: OutlineInputBorder(
           borderSide: BorderSide(
@@ -58,3 +65,8 @@ class CustomTextFormTodo extends StatelessWidget {
     );
   }
 }
+
+
+// Color(0xffF0F0F0)
+
+// Color.fromARGB(112, 255, 255, 255)

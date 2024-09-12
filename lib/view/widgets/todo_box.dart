@@ -1,100 +1,169 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:todo_list_app/controller/bloc/pop_up_bloc.dart';
-import 'package:todo_list_app/view/widgets/pop_up_date_widget.dart';
+import 'dart:ui';
 
-class TodoBox extends StatelessWidget {
-  const TodoBox({super.key});
+import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:todo_list_app/model/user_data/user_data.dart';
+import 'package:todo_list_app/view/widgets/overLay_deadLine.dart';
+
+class TodoBox extends StatefulWidget {
+  final UserData userData;
+  final String formatedDate;
+  final String formatedDeadLine;
+
+  const TodoBox({
+    super.key,
+    required this.userData,
+    required this.formatedDate,
+    required this.formatedDeadLine,
+  });
+
+  @override
+  State<TodoBox> createState() => _TodoBoxState();
+}
+
+class _TodoBoxState extends State<TodoBox> {
+  bool isVisible = false;
+
+  void togglePopup() {
+    setState(() {
+      isVisible = true;
+    });
+
+    Future.delayed(const Duration(seconds: 2), () {
+      setState(() {
+        isVisible = false;
+      });
+    });
+  }
+
+  bool isDeadlineToday(DateTime? deadline) {
+    final today = DateTime.now();
+    return deadline?.year == today.year &&
+        deadline?.month == today.month &&
+        deadline?.day == today.day;
+  }
 
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: EdgeInsets.only(top: 17.sp),
-      child: Container(
-        width: 327.sp,
-        height: 120.sp,
-        decoration: BoxDecoration(
-          color: const Color(0xffF76C6A),
-          borderRadius: BorderRadius.circular(12),
-        ),
-        child: Padding(
-          padding: EdgeInsets.only(
-            left: 16.sp,
-          ),
-          child: Stack(
-            children: [
-              BlocBuilder<PopUpBloc, PopupState>(
-                builder: (context, state) {
-                  if (state.isVisible) {
-                    return Positioned(
-                      top: 55.sp,
-                      right: 12.sp,
-                      child: const PopUpDateWidget(),
-                    );
-                  } else {
-                    return const SizedBox
-                        .shrink(); // Empty widget when popup is not visible
-                  }
-                },
-              ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Padding(
-                    padding: EdgeInsets.only(top: 6.sp, bottom: 8, right: 8.sp),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          "Design Logo",
-                          style: TextStyle(
-                              fontFamily: "Body",
-                              color: Colors.white,
-                              fontWeight: FontWeight.w600,
-                              fontSize: 16.sp),
+      child: Stack(
+        children: [
+          ClipRRect(
+            borderRadius: BorderRadius.circular(12),
+            child: BackdropFilter(
+              filter: isVisible
+                  ? ImageFilter.blur(
+                      sigmaX: 10.0,
+                      sigmaY: 10.0,
+                    )
+                  : ImageFilter.blur(sigmaX: 0.0, sigmaY: 0.0),
+              child: Container(
+                width: 327.sp,
+                height: 120.sp,
+                decoration: BoxDecoration(
+                  color: widget.userData.deadline != null
+                      ? const Color(0xffF76C6A)
+                      : const Color(0xffF79E89)
+                          .withOpacity(isVisible ? 0.8 : 1),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Padding(
+                  padding: EdgeInsets.only(left: 16.sp),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Padding(
+                        padding:
+                            EdgeInsets.only(top: 6.sp, bottom: 8, right: 8.sp),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              widget.userData.title,
+                              style: TextStyle(
+                                fontFamily: "Body",
+                                color: Colors.white,
+                                fontWeight: FontWeight.w600,
+                                fontSize: 16.sp,
+                              ),
+                            ),
+                            widget.userData.deadline != null
+                                ? InkWell(
+                                    onTap: togglePopup,
+                                    child: Image.asset(
+                                      "icons/clock (3).png",
+                                      color: Colors.white,
+                                      width: 16.sp,
+                                      height: 16.sp,
+                                    ),
+                                  )
+                                : const SizedBox(),
+                          ],
                         ),
-                        InkWell(
-                          onTap: () {
-                            context.read<PopUpBloc>().add(ShowPopupEvent());
-                          },
-                          child: Image.asset(
-                            "icons/clock (3).png",
+                      ),
+                      SizedBox(
+                        width: 270.sp,
+                        height: 40.sp,
+                        child: Text(
+                          widget.userData.description,
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                          textAlign: TextAlign.start,
+                          style: TextStyle(
+                            fontFamily: "Body",
                             color: Colors.white,
-                            width: 16.sp,
-                            height: 16.sp,
+                            fontWeight: FontWeight.w400,
+                            fontSize: 14.sp,
                           ),
-                        )
-                      ],
-                    ),
-                  ),
-                  SizedBox(
-                    width: 270.sp,
-                    height: 45.sp,
-                    child: Text(
-                      "Make Ui design for the mini project post figma link to the trello using",
-                      textAlign: TextAlign.start,
-                      style: TextStyle(
+                        ),
+                      ),
+                      SizedBox(height: 20.sp),
+                      Text(
+                        widget.formatedDate,
+                        style: TextStyle(
                           fontFamily: "Body",
                           color: Colors.white,
                           fontWeight: FontWeight.w400,
-                          fontSize: 14.sp),
-                    ),
+                          fontSize: 11.sp,
+                        ),
+                      ),
+                    ],
                   ),
-                  SizedBox(height: 16.sp),
-                  Text(
-                    "Created at 1 Sept 2021",
-                    style: TextStyle(
-                        fontFamily: "Body",
-                        color: Colors.white,
-                        fontWeight: FontWeight.w400,
-                        fontSize: 11.sp),
-                  )
-                ],
+                ),
               ),
-            ],
+            ),
           ),
-        ),
+          if (isVisible)
+            Positioned.fill(
+              child: GestureDetector(
+                onTap: () {
+                  setState(() {
+                    isVisible = false;
+                  });
+                },
+                child: DeadLineOverLay(
+                  userData: widget.userData,
+                  title: widget.formatedDeadLine,
+                ),
+              ),
+            ),
+          if (widget.userData.deadline != null &&
+              isDeadlineToday(widget.userData.deadline))
+            Positioned.fill(
+              child: GestureDetector(
+                onTap: () {
+                  setState(() {
+                    isVisible = false;
+                  });
+                },
+                child: DeadLineOverLay(
+                  userData: widget.userData,
+                  title: "DeadLine Passed",
+                ),
+              ),
+            ),
+        ],
       ),
     );
   }

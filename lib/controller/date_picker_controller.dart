@@ -5,7 +5,7 @@ class DatePickerController {
   final DateModel dateModel = DateModel();
   final TextEditingController dateController = TextEditingController();
 
-  Future<void> selectDate(BuildContext context) async {
+  Future<DateTime?> selectDate(BuildContext context) async {
     final DateTime? picker = await showDatePicker(
       context: context,
       initialDate: DateTime.now(),
@@ -15,7 +15,8 @@ class DatePickerController {
 
     if (picker != null) {
       dateModel.selectedDate = picker;
-      dateController.text = dateModel.formateDate();
+      dateController.text = dateModel.formateDate(picker);
     }
+    return dateModel.selectedDate;
   }
 }

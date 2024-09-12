@@ -5,21 +5,35 @@ class CustomTextForm extends StatelessWidget {
   final String hint;
   final Widget? suffixIcon;
   final bool obscureText;
+  final TextEditingController? controller;
+  final String? Function(String?)? validator;
 
   const CustomTextForm(
       {super.key,
       required this.hint,
       this.suffixIcon,
-      required this.obscureText});
+      required this.obscureText,
+      this.controller,
+      this.validator});
 
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 24.sp),
       child: TextFormField(
+        validator: validator,
+        autovalidateMode: AutovalidateMode.onUserInteraction,
+        controller: controller,
         obscureText: obscureText,
         cursorColor: const Color.fromARGB(179, 147, 147, 147),
         decoration: InputDecoration(
+          border: OutlineInputBorder(
+            borderSide: BorderSide(
+              width: 1.sp,
+              color: const Color.fromARGB(179, 147, 147, 147),
+            ),
+            borderRadius: BorderRadius.circular(12.sp),
+          ),
           suffixIcon: suffixIcon,
           contentPadding:
               EdgeInsets.only(left: 16.sp, bottom: 14.sp, top: 14.sp),
@@ -28,13 +42,12 @@ class CustomTextForm extends StatelessWidget {
               width: 1.sp,
               color: const Color.fromARGB(179, 147, 147, 147),
             ),
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(12.sp),
           ),
           fillColor: Colors.amber,
           hintText: hint,
           hintStyle: const TextStyle(
             fontFamily: "Body",
-            // fontWeight: FontWeight.bold,
             color: Color(0xff939393),
           ),
           focusedBorder: OutlineInputBorder(
