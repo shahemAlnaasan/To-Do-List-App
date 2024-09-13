@@ -118,21 +118,28 @@ class _HomePageState extends State<HomePage> {
                                 .formateDate(state.userData?[i].creatingDate);
                             String formatedDeadLine = DateModel()
                                 .formateDate(state.userData?[i].deadline);
-                            return InkWell(
-                              child: TodoBox(
-                                userData: state.userData![i],
-                                formatedDate: formatedDate,
-                                formatedDeadLine: formatedDeadLine,
-                              ),
-                              onTap: () {
-                                Navigator.of(context).push(MaterialPageRoute(
-                                    builder: (context) => TodoDetail(
-                                          userData: state.userData![i],
-                                          formatedDate: formatedDate,
-                                          index: i,
-                                          formatedDeadLine: formatedDeadLine,
-                                        )));
-                              },
+                            return Column(
+                              children: [
+                                SizedBox(height: 17.sp),
+                                InkWell(
+                                  child: TodoBox(
+                                    userData: state.userData![i],
+                                    formatedDate: formatedDate,
+                                    formatedDeadLine: formatedDeadLine,
+                                  ),
+                                  onTap: () {
+                                    Navigator.of(context)
+                                        .push(MaterialPageRoute(
+                                            builder: (context) => TodoDetail(
+                                                  userData: state.userData![i],
+                                                  formatedDate: formatedDate,
+                                                  index: i,
+                                                  formatedDeadLine:
+                                                      formatedDeadLine,
+                                                )));
+                                  },
+                                ),
+                              ],
                             );
                           },
                         );

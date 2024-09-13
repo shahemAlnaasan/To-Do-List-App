@@ -16,8 +16,9 @@ class DeadLineOverLay extends StatelessWidget {
         borderRadius: BorderRadius.circular(12),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.25),
-            blurRadius: 12,
+            blurStyle: BlurStyle.inner,
+            color: Colors.black.withOpacity(0.35),
+            blurRadius: 20,
           ),
         ],
       ),
