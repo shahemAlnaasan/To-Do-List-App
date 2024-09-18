@@ -11,6 +11,9 @@ class CustomTextFormTodo extends StatelessWidget {
   final TextInputType? keyboardType;
   final Color? hintColor;
   final Color? suffixIconColor;
+  final FocusNode? focusNode;
+  final void Function(String)? onFieldSubmitted;
+  final TextInputAction? textInputAction;
 
   const CustomTextFormTodo({
     super.key,
@@ -23,11 +26,17 @@ class CustomTextFormTodo extends StatelessWidget {
     this.keyboardType,
     this.hintColor,
     this.suffixIconColor,
+    this.focusNode,
+    this.onFieldSubmitted,
+    this.textInputAction,
   });
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+      textInputAction: textInputAction,
+      focusNode: focusNode,
+      onFieldSubmitted: onFieldSubmitted,
       keyboardType: keyboardType,
       style:
           TextStyle(color: Colors.white, fontFamily: "Body", fontSize: 16.sp),

@@ -24,7 +24,7 @@ class _FilterTodoState extends State<FilterTodo> {
         position: PopupMenuPosition.under,
         iconSize: 24,
         icon: const SizedIcon(
-          name: "icons/filter (1).png",
+          name: "icons/filter.png",
           color: Color(0xffF76C6A),
         ),
         onSelected: (value) {

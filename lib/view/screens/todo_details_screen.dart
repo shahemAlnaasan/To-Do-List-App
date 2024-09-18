@@ -9,13 +9,13 @@ import 'package:todo_list_app/view/todo_add_delete_edit/delete_todo.dart';
 import 'package:todo_list_app/view/todo_add_delete_edit/edit_todo.dart';
 import 'package:todo_list_app/view/widgets/pop_up_date_widget.dart';
 
-class TodoDetail extends StatefulWidget {
+class TodoDetailsScreen extends StatefulWidget {
   final UserData userData;
   final String formatedDate;
   final int index;
   final String formatedDeadLine;
 
-  const TodoDetail({
+  const TodoDetailsScreen({
     super.key,
     required this.userData,
     required this.formatedDate,
@@ -24,10 +24,10 @@ class TodoDetail extends StatefulWidget {
   });
 
   @override
-  State<TodoDetail> createState() => _TodoDetailState();
+  State<TodoDetailsScreen> createState() => _TodoDetailsScreenState();
 }
 
-class _TodoDetailState extends State<TodoDetail> {
+class _TodoDetailsScreenState extends State<TodoDetailsScreen> {
   final ScrollController scrollController = ScrollController();
   bool _showFab = true;
   bool isVisible = false;
@@ -37,6 +37,7 @@ class _TodoDetailState extends State<TodoDetail> {
   void initState() {
     super.initState();
     scrollController.addListener(_toggleFabVisibility);
+    checkImage();
   }
 
   @override
@@ -75,29 +76,32 @@ class _TodoDetailState extends State<TodoDetail> {
     }
   }
 
-  @override
-  Widget build(BuildContext context) {
-    const duration = Duration(milliseconds: 300);
-    File? image;
+  Duration duration = const Duration(milliseconds: 300);
+  File? image;
+  void checkImage() {
     if (widget.userData.image != null) {
       image = File(widget.userData.image!);
     }
+  }
 
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       body: BlocListener<TodoBloc, TodoState>(
         listener: (context, state) {
           if (state.status == TodoStatus.success) {
-            // if (widget.index >= 0 && widget.index < state.userData!.length) {
-            //   // Safe to update userData only if the index is valid
-            //   final updatedUserData = state.userData![widget.index];
-            //   setState(() {
-            //     widget.userData.title = updatedUserData.title;
-            //     widget.userData.description = updatedUserData.description;
-            //     widget.userData.image = updatedUserData.image;
-            //     widget.userData.deadline =
-            //         updatedUserData.deadline ?? widget.userData.deadline;
-            //   });
-            // }
+            if (widget.index >= 0 && widget.index < state.userData!.length) {
+              final updatedUserData = state.userData![widget.index];
+              setState(
+                () {
+                  widget.userData.title = updatedUserData.title;
+                  widget.userData.description = updatedUserData.description;
+                  widget.userData.image = updatedUserData.image;
+                  widget.userData.deadline =
+                      updatedUserData.deadline ?? widget.userData.deadline;
+                },
+              );
+            }
           }
         },
         child: Stack(
@@ -123,23 +127,29 @@ class _TodoDetailState extends State<TodoDetail> {
                         onTap: () {
                           Navigator.pop(context);
                         },
-                        child: Icon(
+                        child: const Icon(
                           Icons.arrow_back_ios_new_rounded,
                           color: Colors.black,
-                          size: 20.sp,
+                          size: 22,
                         ),
                       ),
                       Row(
                         children: [
                           InkWell(
+                            enableFeedback:
+                                widget.userData.deadline != null ? true : false,
                             onTap: () {
-                              togglePopup();
+                              widget.userData.deadline != null
+                                  ? togglePopup()
+                                  : null;
                             },
                             child: Image.asset(
-                              "icons/clock (3).png",
-                              width: 24.sp,
-                              height: 24.sp,
-                              color: Colors.black,
+                              "icons/clock.png",
+                              width: 26,
+                              height: 26,
+                              color: widget.userData.deadline != null
+                                  ? Colors.black
+                                  : Colors.grey,
                             ),
                           ),
                           SizedBox(width: 7.sp),
@@ -158,9 +168,9 @@ class _TodoDetailState extends State<TodoDetail> {
                               );
                             },
                             child: Image.asset(
-                              "icons/edit-2 (1).png",
-                              width: 24.sp,
-                              height: 24.sp,
+                              "icons/edit.png",
+                              width: 26,
+                              height: 26,
                             ),
                           ),
                           SizedBox(width: 7.sp),
@@ -178,9 +188,9 @@ class _TodoDetailState extends State<TodoDetail> {
                               );
                             },
                             child: Image.asset(
-                              "icons/trash-2 (1).png",
-                              width: 24.sp,
-                              height: 24.sp,
+                              "icons/trash.png",
+                              width: 26,
+                              height: 26,
                             ),
                           ),
                         ],

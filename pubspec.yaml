@@ -66,18 +66,18 @@ dev_dependencies:
 flutter_launcher_icons:
   android: true
   ios: true
-  image_path: "icons/logo/2920afb7-ecf9-40bb-9b50-d36762dfc679.png"
+  image_path: "icons/logo/appIcon.png"
   min_sdk_android: 21
 
 
 flutter_native_splash:
-  image: icons/logo/Union (7).png
+  image: icons/logo/UnionSplash.png
   android: true
   ios: true
   color: "#ffffff"
 
   android_12:
-    image: icons/logo/Union (7).png
+    image: icons/logo/UnionSplash.png
     icon_background_color: "#ffffff"
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

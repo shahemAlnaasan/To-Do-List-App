@@ -8,7 +8,7 @@ class HiveServicesTodos {
     if (userBox == null || !userBox.isOpen) {
       String? userBoxName = await getUserBox();
       if (userBoxName != null) {
-        userBox = await Hive.openBox<dynamic>(userBoxName);
+        userBox = await Hive.openBox(userBoxName);
       }
     }
   }
@@ -16,7 +16,7 @@ class HiveServicesTodos {
   Future<bool> storeTodos(UserData userData) async {
     String? userBoxName = await getUserBox();
 
-    var userBox = await Hive.openBox<dynamic>(userBoxName!);
+    var userBox = await Hive.openBox(userBoxName!);
     List<dynamic> retrieveduserTodos =
         await userBox.get("userData", defaultValue: []) ?? [];
 
@@ -31,7 +31,7 @@ class HiveServicesTodos {
   }
 
   Future<List<UserData>> getTodos(String email) async {
-    var userBox = await Hive.openBox<dynamic>(email);
+    var userBox = await Hive.openBox(email);
 
     List<dynamic>? retrievedUserTodos =
         await userBox.get("userData", defaultValue: []);
@@ -52,7 +52,7 @@ class HiveServicesTodos {
 
       var userBox = Hive.isBoxOpen(userBoxName)
           ? Hive.box<dynamic>(userBoxName)
-          : await Hive.openBox<dynamic>(userBoxName);
+          : await Hive.openBox(userBoxName);
 
       List<dynamic> retrievedUserTodos =
           await userBox.get("userData", defaultValue: []) ?? [];
@@ -76,7 +76,7 @@ class HiveServicesTodos {
   Future<bool> editTodos(int index, UserData userData) async {
     String? userBoxName = await getUserBox();
 
-    var userBox = await Hive.openBox<dynamic>(userBoxName!);
+    var userBox = await Hive.openBox(userBoxName!);
 
     List<dynamic> retrieveduserTodos =
         await userBox.get("userData", defaultValue: []) ?? [];

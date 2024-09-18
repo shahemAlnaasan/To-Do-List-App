@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:todo_list_app/controller/auth_bloc/auth_bloc.dart';
-import 'package:todo_list_app/view/auth/sign_in_page.dart';
-import 'package:todo_list_app/view/home_page.dart';
+import 'package:todo_list_app/controller/todo_bloc/todo_bloc.dart';
+import 'package:todo_list_app/view/screens/auth_screens/sign_in_screen.dart';
+import 'package:todo_list_app/view/screens/home_screen.dart';
 
 class InitPage extends StatelessWidget {
   const InitPage({super.key});
@@ -14,12 +15,14 @@ class InitPage extends StatelessWidget {
         if (state.status == AuthStatus.authenticated) {
           Navigator.pushReplacement(
             context,
-            MaterialPageRoute(builder: (context) => const HomePage()),
+            MaterialPageRoute(
+              builder: (context) => const HomeScreen(),
+            ),
           );
         } else if (state.status == AuthStatus.unAuthenticated) {
           Navigator.pushReplacement(
             context,
-            MaterialPageRoute(builder: (context) => const SignIn()),
+            MaterialPageRoute(builder: (context) => const SignInScreen()),
           );
         }
       },

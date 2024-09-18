@@ -96,10 +96,10 @@ class _TodoBoxState extends State<TodoBox> {
                               ? InkWell(
                                   onTap: togglePopup,
                                   child: Image.asset(
-                                    "icons/clock (3).png",
+                                    "icons/clock.png",
                                     color: Colors.white,
-                                    width: 16.sp,
-                                    height: 16.sp,
+                                    width: 18,
+                                    height: 18,
                                   ),
                                 )
                               : const SizedBox(),

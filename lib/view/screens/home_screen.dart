@@ -3,28 +3,31 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:todo_list_app/controller/todo_bloc/todo_bloc.dart';
 import 'package:todo_list_app/model/date_model.dart';
-import 'package:todo_list_app/view/filter/filter_todo.dart';
+import 'package:todo_list_app/view/widgets/filter_todo.dart';
 import 'package:todo_list_app/view/todo_add_delete_edit/add_todo.dart';
-import 'package:todo_list_app/view/todo_details_page.dart';
 import 'package:todo_list_app/view/widgets/custom_icon_size.dart';
 import 'package:todo_list_app/view/widgets/todo_box.dart';
 
-class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+class HomeScreen extends StatefulWidget {
+  const HomeScreen({super.key});
 
   @override
-  State<HomePage> createState() => _HomePageState();
+  State<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
-    context.read<TodoBloc>().add(GetTodosEvent());
     super.initState();
+    context.read<TodoBloc>().add(GetTodosEvent());
   }
+
+  late String formatedDate;
+  late String formatedDeadLine;
 
   @override
   Widget build(BuildContext context) {
+    final todoBloc = context.read<TodoBloc>();
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
@@ -45,7 +48,7 @@ class _HomePageState extends State<HomePage> {
             padding: EdgeInsets.only(right: 24.sp),
             child: InkWell(
               child: const SizedIcon(
-                name: "icons/settings (1).png",
+                name: "icons/settings.png",
               ),
               onTap: () {
                 Navigator.of(context).pushNamed("Profile");
@@ -65,7 +68,7 @@ class _HomePageState extends State<HomePage> {
                 child: Row(
                   children: [
                     const SizedIcon(
-                        name: "icons/Union (1).png", color: Color(0xffF76C6A)),
+                        name: "icons/Union.png", color: Color(0xffF76C6A)),
                     SizedBox(width: 9.sp),
                     Text(
                       "LIST OF TODO",
@@ -84,7 +87,9 @@ class _HomePageState extends State<HomePage> {
             padding: EdgeInsets.only(left: 24.sp, right: 24.sp, bottom: 10.sp),
             child: BlocBuilder<TodoBloc, TodoState>(
               builder: (context, state) {
+                print('Current UI State: ${state.status}');
                 if (state.status == TodoStatus.loading) {
+                  print('Rendering Loading Indicator');
                   return Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.center,
@@ -98,11 +103,13 @@ class _HomePageState extends State<HomePage> {
                     ],
                   );
                 } else if (state.status == TodoStatus.success) {
+                  print(
+                      'Rendering Todos List with ${state.userData?.length} items');
                   return state.userData!.isEmpty
                       ? Center(
                           heightFactor: 0.03.sh,
                           child: Text(
-                            "Start adding your ToDos!",
+                            "Start adding your Todos!",
                             style: TextStyle(
                                 fontFamily: "Body",
                                 fontSize: 15.sp,
@@ -114,9 +121,9 @@ class _HomePageState extends State<HomePage> {
                           physics: const NeverScrollableScrollPhysics(),
                           itemCount: state.userData!.length,
                           itemBuilder: (context, i) {
-                            String formatedDate = DateModel()
+                            formatedDate = DateModel()
                                 .formateDate(state.userData?[i].creatingDate);
-                            String formatedDeadLine = DateModel()
+                            formatedDeadLine = DateModel()
                                 .formateDate(state.userData?[i].deadline);
                             return Column(
                               children: [
@@ -128,23 +135,25 @@ class _HomePageState extends State<HomePage> {
                                     formatedDeadLine: formatedDeadLine,
                                   ),
                                   onTap: () {
-                                    Navigator.of(context)
-                                        .push(MaterialPageRoute(
-                                            builder: (context) => TodoDetail(
-                                                  userData: state.userData![i],
-                                                  formatedDate: formatedDate,
-                                                  index: i,
-                                                  formatedDeadLine:
-                                                      formatedDeadLine,
-                                                )));
+                                    Navigator.of(context).pushNamed(
+                                      "TodoDetailsScreen",
+                                      arguments: {
+                                        "userData": state.userData![i],
+                                        "formatedDate": formatedDate,
+                                        "index": i,
+                                        "formatedDeadLine": formatedDeadLine,
+                                      },
+                                    );
                                   },
                                 ),
                               ],
                             );
                           },
                         );
+                } else if (state.status == TodoStatus.error) {
+                  return Text(state.message);
                 } else {
-                  return const Text("");
+                  return const SizedBox();
                 }
               },
             ),
@@ -153,7 +162,7 @@ class _HomePageState extends State<HomePage> {
       ),
       floatingActionButton: FloatingActionButton(
         backgroundColor: Colors.transparent,
-        elevation: 10000,
+        elevation: 999,
         onPressed: () {
           showModalBottomSheet(
             barrierColor: Colors.transparent,
@@ -166,8 +175,8 @@ class _HomePageState extends State<HomePage> {
         },
         child: Image.asset(
           "icons/plus-circle.png",
-          width: 72.sp,
-          height: 72.sp,
+          width: 200.sp,
+          height: 200.sp,
         ),
       ),
     );

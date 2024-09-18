@@ -2,18 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:todo_list_app/controller/auth_bloc/auth_bloc.dart';
-import 'package:todo_list_app/view/auth/change_password.dart';
 import 'package:todo_list_app/view/widgets/custom_button.dart';
 import 'package:todo_list_app/view/widgets/custom_icon_size.dart';
 
-class ProfilePage extends StatefulWidget {
-  const ProfilePage({super.key});
+class ProfileScreen extends StatefulWidget {
+  const ProfileScreen({super.key});
 
   @override
-  State<ProfilePage> createState() => _ProfilePageState();
+  State<ProfileScreen> createState() => _ProfileScreenState();
 }
 
-class _ProfilePageState extends State<ProfilePage> {
+class _ProfileScreenState extends State<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -33,11 +32,11 @@ class _ProfilePageState extends State<ProfilePage> {
                 fontSize: 25.sp),
           ),
         ),
-        actions: [
+        actions: const [
           Padding(
-              padding: EdgeInsets.only(right: 24.sp),
-              child: const SizedIcon(
-                name: "icons/settings (1).png",
+              padding: EdgeInsets.only(right: 26),
+              child: SizedIcon(
+                name: "icons/settings.png",
               )),
         ],
       ),
@@ -50,8 +49,8 @@ class _ProfilePageState extends State<ProfilePage> {
             Center(
               child: Image.asset(
                 "icons/rafiki.png",
-                width: 326.12.sp,
-                height: 243.sp,
+                width: 344,
+                height: 252,
               ),
             ),
             SizedBox(height: 109.sp),
@@ -115,13 +114,8 @@ class _ProfilePageState extends State<ProfilePage> {
                         ),
                         InkWell(
                           onTap: () {
-                            Navigator.of(context).push(
-                              MaterialPageRoute(
-                                builder: (context) => ChangePassword(
-                                  boxName: state.userInfo!.email,
-                                ),
-                              ),
-                            );
+                            Navigator.of(context).pushNamed("ChangePassword",
+                                arguments: {"boxName": state.userInfo!.email});
                           },
                           child: Text(
                             "Change Password",

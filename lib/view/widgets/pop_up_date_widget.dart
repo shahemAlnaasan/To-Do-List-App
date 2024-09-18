@@ -11,7 +11,7 @@ class PopUpDateWidget extends StatelessWidget {
       alignment: const Alignment(0, 0.3),
       children: [
         Image.asset(
-          "icons/DEADLINE (2).png",
+          "icons/DEADLINE.png",
           color: const Color(0xffF76C6A),
           width: 126.sp,
           height: 55.sp,

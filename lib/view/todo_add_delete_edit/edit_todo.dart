@@ -27,6 +27,10 @@ class _EditTodoState extends State<EditTodo> {
   TextEditingController imageNameController = TextEditingController();
   TextEditingController deadLineController = TextEditingController();
   DatePickerController? datePickerController = DatePickerController();
+
+  final FocusNode titleFocusNode = FocusNode();
+  final FocusNode descriptionFocusNode = FocusNode();
+
   Future<DateTime?>? deadlinePicked;
   bool isDateChanged = false;
   File? image;
@@ -49,72 +53,74 @@ class _EditTodoState extends State<EditTodo> {
     super.initState();
   }
 
-  @override
-  Widget build(BuildContext context) {
-    final ImagePicker picker = ImagePicker();
+  final ImagePicker picker = ImagePicker();
 
-    Future<void> pickImageFromGallery() async {
-      final XFile? pickedFile =
-          await picker.pickImage(source: ImageSource.gallery);
+  Future<void> pickImageFromGallery() async {
+    final XFile? pickedFile =
+        await picker.pickImage(source: ImageSource.gallery);
 
-      if (pickedFile != null) {
-        setState(() {
-          image = File(pickedFile.path);
-          imageNameController.text = pickedFile.name;
-        });
-      }
+    if (pickedFile != null) {
+      setState(() {
+        image = File(pickedFile.path);
+        imageNameController.text = pickedFile.name;
+      });
     }
+  }
 
-    Future<void> pickImageFromCamera() async {
-      final cameraStatus = await Permission.camera.request();
+  Future<void> pickImageFromCamera() async {
+    final cameraStatus = await Permission.camera.request();
 
-      if (cameraStatus.isGranted) {
-        final XFile? pickedFile =
-            await picker.pickImage(source: ImageSource.camera);
-        if (pickedFile != null) {
-          setState(() {
+    if (cameraStatus.isGranted) {
+      final XFile? pickedFile =
+          await picker.pickImage(source: ImageSource.camera);
+      if (pickedFile != null) {
+        setState(
+          () {
             image = File(pickedFile.path);
             imageNameController.text = pickedFile.name;
-          });
-        }
-      } else {
-        return;
+          },
+        );
       }
+    } else {
+      return;
     }
+  }
 
-    void showImageSourceSelector(context) {
-      showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: const Text('Select Image Source'),
-            content: SingleChildScrollView(
-              child: ListBody(
-                children: [
-                  ListTile(
-                    leading: const Icon(Icons.photo_library),
-                    title: const Text('Choose from Gallery'),
-                    onTap: () {
-                      pickImageFromGallery();
-                      Navigator.of(context).pop();
-                    },
-                  ),
-                  ListTile(
-                    leading: const Icon(Icons.camera_alt),
-                    title: const Text('Take from Camera'),
-                    onTap: () {
-                      pickImageFromCamera();
-                      Navigator.of(context).pop();
-                    },
-                  ),
-                ],
-              ),
+  void showImageSourceSelector(context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Select Image Source'),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: [
+                ListTile(
+                  leading: const Icon(Icons.photo_library),
+                  title: const Text('Choose from Gallery'),
+                  onTap: () {
+                    pickImageFromGallery();
+                    Navigator.of(context).pop();
+                  },
+                ),
+                ListTile(
+                  leading: const Icon(Icons.camera_alt),
+                  title: const Text('Take from Camera'),
+                  onTap: () {
+                    pickImageFromCamera();
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ],
             ),
-          );
-        },
-      );
-    }
+          ),
+        );
+      },
+    );
+  }
 
+  @override
+  Widget build(BuildContext context) {
     return Container(
         width: 375.sp,
         height: 722.sp,
@@ -126,7 +132,7 @@ class _EditTodoState extends State<EditTodo> {
           padding: EdgeInsets.only(top: 16.sp, left: 24.sp, right: 24.sp),
           child: Column(
             children: [
-              Image.asset("icons/Rectangle 18.png"),
+              Image.asset("icons/Rectangle.png"),
               SizedBox(height: 20.sp),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -135,6 +141,12 @@ class _EditTodoState extends State<EditTodo> {
                     width: 327.sp,
                     height: 48.sp,
                     child: CustomTextFormTodo(
+                      textInputAction: TextInputAction.next,
+                      focusNode: titleFocusNode,
+                      onFieldSubmitted: (_) {
+                        FocusScope.of(context)
+                            .requestFocus(descriptionFocusNode);
+                      },
                       controller: titleController,
                       color: Colors.white,
                       keyboardType: TextInputType.text,
@@ -146,6 +158,8 @@ class _EditTodoState extends State<EditTodo> {
                     width: 327.sp,
                     height: 400.sp,
                     child: CustomTextFormTodo(
+                      textInputAction: TextInputAction.done,
+                      focusNode: descriptionFocusNode,
                       controller: descriptionController,
                       color: Colors.white,
                       hint: 'Description',
@@ -242,13 +256,14 @@ class _EditTodoState extends State<EditTodo> {
                         deadline: deadline,
                         image: imagePath,
                       );
+                      // ignore: use_build_context_synchronously
                       context.read<TodoBloc>().add(
                             EditTodosEvent(
                                 userData: userData, index: widget.index),
                           );
 
-                      Navigator.of(context).pushNamedAndRemoveUntil(
-                          "homePage", (context) => false);
+                      // ignore: use_build_context_synchronously
+                      Navigator.pop(context);
                     },
                   ),
                 ],

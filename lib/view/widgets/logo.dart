@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class Logo extends StatelessWidget {
   const Logo({super.key});
@@ -7,9 +6,9 @@ class Logo extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Image.asset(
-      "icons/logo/Union (3).png",
-      width: 187.sp,
-      height: 180.sp,
+      "icons/logo/Union.png",
+      width: 187,
+      height: 180,
     );
   }
 }

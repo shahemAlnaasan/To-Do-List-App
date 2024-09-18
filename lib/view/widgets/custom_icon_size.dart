@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class SizedIcon extends StatelessWidget {
   final String name;
@@ -11,8 +10,8 @@ class SizedIcon extends StatelessWidget {
     return Image.asset(
       name,
       color: color ?? const Color(0xff272727),
-      width: 24.sp,
-      height: 24.sp,
+      width: 26,
+      height: 26,
     );
   }
 }

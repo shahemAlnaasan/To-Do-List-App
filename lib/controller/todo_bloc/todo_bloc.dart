@@ -30,7 +30,7 @@ class TodoBloc extends Bloc<TodoEvent, TodoState> {
 
       emit(state.copyWith(status: TodoStatus.success, userData: todosList));
     } catch (e) {
-      emit(state.copyWith(status: TodoStatus.error, message: "catch$e"));
+      emit(state.copyWith(status: TodoStatus.error, message: "catchG$e"));
     }
   }
 
@@ -83,16 +83,14 @@ class TodoBloc extends Bloc<TodoEvent, TodoState> {
   }
 
   Future<void> onDeleteTodos(DeleteTodosEvent event, emit) async {
-    emit(state.copyWith(status: TodoStatus.loading));
-    final result = await hiveServicesTodos.deleteTodos(event.index);
-
     try {
+      final result = await hiveServicesTodos.deleteTodos(event.index);
       if (result) {
         emit(state.copyWith(status: TodoStatus.success));
         add(GetTodosEvent());
       }
     } catch (e) {
-      emit(state.copyWith(status: TodoStatus.error, message: "catch $e"));
+      emit(state.copyWith(status: TodoStatus.error, message: "catchD $e"));
     }
   }
 

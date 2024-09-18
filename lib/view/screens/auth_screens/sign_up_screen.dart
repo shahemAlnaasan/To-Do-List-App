@@ -2,33 +2,57 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:todo_list_app/controller/auth_bloc/auth_bloc.dart';
+import 'package:todo_list_app/model/user_info/user_info.dart';
+import 'package:todo_list_app/view/widgets/custom_button.dart';
 import 'package:todo_list_app/view/widgets/custom_progress_indecator.dart';
 import 'package:todo_list_app/view/widgets/custom_text_form.dart';
 import 'package:todo_list_app/view/widgets/logo.dart';
 
-class ChangePassword extends StatefulWidget {
-  final String? boxName;
-  const ChangePassword({super.key, required this.boxName});
+class SignUpScreen extends StatefulWidget {
+  const SignUpScreen({super.key});
 
   @override
-  State<ChangePassword> createState() => _ChangePasswordState();
+  State<SignUpScreen> createState() => _SignUpScreenState();
 }
 
-class _ChangePasswordState extends State<ChangePassword> {
+class _SignUpScreenState extends State<SignUpScreen> {
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
   final TextEditingController emailController = TextEditingController();
-  final TextEditingController oldPasswordController = TextEditingController();
-  final TextEditingController newPasswordController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+  final TextEditingController fullNameController = TextEditingController();
   final TextEditingController confirmPasswordController =
       TextEditingController();
-  bool isPassword = true;
+
+  final FocusNode emailFocusNode = FocusNode();
+  final FocusNode fullNameFocusNode = FocusNode();
+  final FocusNode passwordFocusNode = FocusNode();
+  final FocusNode confirmPasswordFocusNode = FocusNode();
+
+  bool isPasswordVisible = true;
+  bool isConfirmPasswordVisible = true;
+
+  UserInfo saveUserInfo() {
+    final String email = emailController.text;
+    final String fullName = fullNameController.text;
+    final String password = passwordController.text;
+    final String confirmPassword = confirmPasswordController.text;
+
+    return UserInfo(
+      fullName: fullName,
+      email: email,
+      password: password,
+      confirmPassword: confirmPassword,
+      accessToken: "",
+    );
+  }
 
   @override
-  void initState() {
-    if (widget.boxName != null) {
-      emailController.text = widget.boxName!;
-    }
-    super.initState();
+  void dispose() {
+    emailController.dispose();
+    passwordController.dispose();
+    fullNameController.dispose();
+    confirmPasswordController.dispose();
+    super.dispose();
   }
 
   @override
@@ -45,8 +69,12 @@ class _ChangePasswordState extends State<ChangePassword> {
               children: [
                 SizedBox(height: 180.sp),
                 const Center(child: Logo()),
-                SizedBox(height: 90.sp),
+                SizedBox(height: 64.sp),
                 CustomTextForm(
+                  focusNode: emailFocusNode,
+                  onFieldSubmittedl: (_) {
+                    FocusScope.of(context).requestFocus(fullNameFocusNode);
+                  },
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'Please enter an email';
@@ -64,146 +92,115 @@ class _ChangePasswordState extends State<ChangePassword> {
                 ),
                 SizedBox(height: 16.sp),
                 CustomTextForm(
-                  controller: oldPasswordController,
+                  focusNode: fullNameFocusNode,
+                  onFieldSubmittedl: (_) {
+                    FocusScope.of(context).requestFocus(passwordFocusNode);
+                  },
+                  validator: (value) {
+                    if (value == null || value.isEmpty || value.length < 5) {
+                      return 'Please enter a vaild name';
+                    }
+                    return null;
+                  },
+                  controller: fullNameController,
+                  hint: 'Full Name',
+                  obscureText: false,
+                ),
+                SizedBox(height: 16.sp),
+                CustomTextForm(
+                  focusNode: passwordFocusNode,
+                  onFieldSubmittedl: (_) {
+                    FocusScope.of(context)
+                        .requestFocus(confirmPasswordFocusNode);
+                  },
                   validator: (value) {
                     if (value == null || value.isEmpty || value.length < 8) {
                       return 'Please enter a password with at least 8 letters';
                     }
                     return null;
                   },
-                  hint: 'Old Password',
-                  obscureText: isPassword ? true : false,
+                  controller: passwordController,
+                  hint: 'Password',
+                  obscureText: isPasswordVisible ? true : false,
                   suffixIcon: InkWell(
                     onTap: () {
                       setState(
                         () {
-                          isPassword = !isPassword;
+                          isPasswordVisible = !isPasswordVisible;
                         },
                       );
                     },
-                    child: isPassword
+                    child: isPasswordVisible
                         ? Image.asset(
                             "icons/eye-off.png",
                             color: const Color(0xff939393),
                           )
-                        : Icon(
+                        : const Icon(
                             Icons.remove_red_eye_outlined,
-                            size: 25.sp,
-                            color: const Color(0xff939393),
+                            size: 25,
+                            color: Color(0xff939393),
                           ),
                   ),
                 ),
                 SizedBox(height: 16.sp),
                 CustomTextForm(
-                  controller: newPasswordController,
+                  focusNode: confirmPasswordFocusNode,
                   validator: (value) {
                     if (value == null || value.isEmpty || value.length < 8) {
                       return 'Please enter a password with at least 8 letters';
                     }
                     return null;
                   },
-                  hint: 'New Password',
-                  obscureText: isPassword ? true : false,
-                  suffixIcon: InkWell(
-                    onTap: () {
-                      setState(
-                        () {
-                          isPassword = !isPassword;
-                        },
-                      );
-                    },
-                    child: isPassword
-                        ? Image.asset(
-                            "icons/eye-off.png",
-                            color: const Color(0xff939393),
-                          )
-                        : Icon(
-                            Icons.remove_red_eye_outlined,
-                            size: 25.sp,
-                            color: const Color(0xff939393),
-                          ),
-                  ),
-                ),
-                SizedBox(height: 16.sp),
-                CustomTextForm(
                   controller: confirmPasswordController,
-                  validator: (value) {
-                    if (value == null || value.isEmpty || value.length < 8) {
-                      return 'Please enter a password with at least 8 letters';
-                    }
-                    return null;
-                  },
                   hint: 'Confirm Password',
-                  obscureText: isPassword ? true : false,
+                  obscureText: isConfirmPasswordVisible ? true : false,
                   suffixIcon: InkWell(
                     onTap: () {
                       setState(
                         () {
-                          isPassword = !isPassword;
+                          isConfirmPasswordVisible = !isConfirmPasswordVisible;
                         },
                       );
                     },
-                    child: isPassword
+                    child: isConfirmPasswordVisible
                         ? Image.asset(
                             "icons/eye-off.png",
                             color: const Color(0xff939393),
                           )
-                        : Icon(
+                        : const Icon(
                             Icons.remove_red_eye_outlined,
-                            size: 25.sp,
-                            color: const Color(0xff939393),
+                            size: 25,
+                            color: Color(0xff939393),
                           ),
                   ),
                 ),
                 SizedBox(height: 24.sp),
                 BlocConsumer<AuthBloc, AuthState>(
                   listener: (context, state) {
-                    if (state.status == AuthStatus.authError) {
+                    if (state.status == AuthStatus.authenticated) {
                       ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text(state.message)),
-                      );
-                    } else if (state.status == AuthStatus.passwordChanged) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text(state.message)),
+                        const SnackBar(
+                          content: Text('Sign up successful!'),
+                        ),
                       );
                       Navigator.pop(context);
+                    } else if (state.status == AuthStatus.authError) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text(state.message)),
+                      );
                     }
                   },
                   builder: (context, state) {
                     if (state.status == AuthStatus.authLoading) {
                       return const CustomProgressIndecator();
                     } else {
-                      return InkWell(
-                        child: Container(
-                          width: 327.sp,
-                          height: 48.sp,
-                          decoration: BoxDecoration(
-                            color: const Color(0xffF79E89),
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          child: const Center(
-                            child: Text(
-                              "CHANGE PASSWORD",
-                              style: TextStyle(
-                                fontFamily: "Body",
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 15,
-                              ),
-                            ),
-                          ),
-                        ),
+                      return CustomButton(
+                        title: "SIGN UP",
                         onTap: () {
-                          if (formKey.currentState!.validate() == true) {
+                          if (formKey.currentState?.validate() == true) {
                             context.read<AuthBloc>().add(
-                                  ChangePasswordEvent(
-                                    email: emailController.text.trim(),
-                                    oldPassword:
-                                        oldPasswordController.text.trim(),
-                                    newPassword:
-                                        newPasswordController.text.trim(),
-                                    confirmPassword:
-                                        confirmPasswordController.text.trim(),
+                                  SignupEvent(
+                                    userInfo: saveUserInfo(),
                                   ),
                                 );
                           }
@@ -211,6 +208,35 @@ class _ChangePasswordState extends State<ChangePassword> {
                       );
                     }
                   },
+                ),
+                SizedBox(height: 15.sp),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      "have an account? ",
+                      style: TextStyle(
+                        color: const Color(0xff939393),
+                        fontFamily: "Body",
+                        fontWeight: FontWeight.w400,
+                        fontSize: 12.sp,
+                      ),
+                    ),
+                    InkWell(
+                      onTap: () {
+                        Navigator.pop(context);
+                      },
+                      child: const Text(
+                        "Log in",
+                        style: TextStyle(
+                          color: Color(0xffF79E89),
+                          fontFamily: "Body",
+                          fontWeight: FontWeight.bold,
+                          fontSize: 12,
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
                 SizedBox(height: 46.sp),
               ],

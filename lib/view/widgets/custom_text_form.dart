@@ -7,6 +7,8 @@ class CustomTextForm extends StatelessWidget {
   final bool obscureText;
   final TextEditingController? controller;
   final String? Function(String?)? validator;
+  final FocusNode? focusNode;
+  final void Function(String)? onFieldSubmittedl;
 
   const CustomTextForm(
       {super.key,
@@ -14,13 +16,18 @@ class CustomTextForm extends StatelessWidget {
       this.suffixIcon,
       required this.obscureText,
       this.controller,
-      this.validator});
+      this.validator,
+      this.focusNode,
+      this.onFieldSubmittedl});
 
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 24.sp),
       child: TextFormField(
+        onFieldSubmitted: onFieldSubmittedl,
+        textInputAction: TextInputAction.next,
+        focusNode: focusNode,
         validator: validator,
         autovalidateMode: AutovalidateMode.onUserInteraction,
         controller: controller,
