@@ -88,7 +88,6 @@ class _TodoDetailsScreenState extends State<TodoDetailsScreen> {
   Duration duration = const Duration(milliseconds: 300);
   File? image;
 
-  // Updated to handle nullable image
   void checkImage() {
     setState(
       () {
