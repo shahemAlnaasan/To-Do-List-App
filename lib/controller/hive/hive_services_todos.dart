@@ -1,5 +1,5 @@
 import 'package:hive/hive.dart';
-import 'package:todo_list_app/model/user_data/user_data.dart';
+import '../../model/user_data/user_data.dart';
 
 class HiveServicesTodos {
   Future<void> openUserBox() async {

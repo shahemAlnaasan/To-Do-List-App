@@ -1,7 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:todo_list_app/controller/hive/hive_services_todos.dart';
-import 'package:todo_list_app/model/user_data/user_data.dart';
+import '../hive/hive_services_todos.dart';
+import '../../model/user_data/user_data.dart';
 
 part 'todo_event.dart';
 part 'todo_state.dart';

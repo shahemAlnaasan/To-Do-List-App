@@ -3,17 +3,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:todo_list_app/controller/todo_bloc/todo_bloc.dart';
-import 'package:todo_list_app/model/user_data/user_data.dart';
-import 'package:todo_list_app/view/todo_add_delete_edit/delete_todo.dart';
-import 'package:todo_list_app/view/todo_add_delete_edit/edit_todo.dart';
-import 'package:todo_list_app/view/widgets/pop_up_date_widget.dart';
+import '../../controller/todo_bloc/todo_bloc.dart';
+import '../../model/user_data/user_data.dart';
+import '../todo_add_delete_edit/delete_todo.dart';
+import '../todo_add_delete_edit/edit_todo.dart';
+import '../widgets/pop_up_date_widget.dart';
 
 class TodoDetailsScreen extends StatefulWidget {
   final UserData userData;
   final String formatedDate;
   final int index;
   final String formatedDeadLine;
+  final TodoBloc todoBloc;
 
   const TodoDetailsScreen({
     super.key,
@@ -21,6 +22,7 @@ class TodoDetailsScreen extends StatefulWidget {
     required this.formatedDate,
     required this.index,
     required this.formatedDeadLine,
+    required this.todoBloc,
   });
 
   @override
@@ -54,16 +56,23 @@ class _TodoDetailsScreenState extends State<TodoDetailsScreen> {
 
   void togglePopup() {
     if (!mounted) return;
-    setState(() {
-      isVisible = true;
-    });
+    setState(
+      () {
+        isVisible = true;
+      },
+    );
 
-    popupTimer = Future.delayed(const Duration(seconds: 3), () {
-      if (!mounted) return;
-      setState(() {
-        isVisible = false;
-      });
-    });
+    popupTimer = Future.delayed(
+      const Duration(seconds: 3),
+      () {
+        if (!mounted) return;
+        setState(
+          () {
+            isVisible = false;
+          },
+        );
+      },
+    );
   }
 
   void _toggleFabVisibility() {
@@ -78,10 +87,19 @@ class _TodoDetailsScreenState extends State<TodoDetailsScreen> {
 
   Duration duration = const Duration(milliseconds: 300);
   File? image;
+
+  // Updated to handle nullable image
   void checkImage() {
-    if (widget.userData.image != null) {
-      image = File(widget.userData.image!);
-    }
+    setState(
+      () {
+        if (widget.userData.image != null &&
+            widget.userData.image!.isNotEmpty) {
+          image = File(widget.userData.image!);
+        } else {
+          image = null;
+        }
+      },
+    );
   }
 
   @override
@@ -99,6 +117,7 @@ class _TodoDetailsScreenState extends State<TodoDetailsScreen> {
                   widget.userData.image = updatedUserData.image;
                   widget.userData.deadline =
                       updatedUserData.deadline ?? widget.userData.deadline;
+                  checkImage();
                 },
               );
             }
@@ -160,9 +179,12 @@ class _TodoDetailsScreenState extends State<TodoDetailsScreen> {
                                 isScrollControlled: true,
                                 context: context,
                                 builder: (context) {
-                                  return EditTodo(
-                                    userData: widget.userData,
-                                    index: widget.index,
+                                  return BlocProvider.value(
+                                    value: widget.todoBloc,
+                                    child: EditTodo(
+                                      userData: widget.userData,
+                                      index: widget.index,
+                                    ),
                                   );
                                 },
                               );
@@ -183,6 +205,7 @@ class _TodoDetailsScreenState extends State<TodoDetailsScreen> {
                                 builder: (context) {
                                   return DeleteTodo(
                                     index: widget.index,
+                                    todoBloc: widget.todoBloc,
                                   );
                                 },
                               );
@@ -199,7 +222,7 @@ class _TodoDetailsScreenState extends State<TodoDetailsScreen> {
                   ),
                   SizedBox(height: 24.sp),
                   Text(
-                    widget.userData.title.toUpperCase(),
+                    widget.userData.title?.toUpperCase() ?? "",
                     textAlign: TextAlign.start,
                     style: TextStyle(
                       fontFamily: "HeadLine",
@@ -214,7 +237,7 @@ class _TodoDetailsScreenState extends State<TodoDetailsScreen> {
                       physics: const BouncingScrollPhysics(),
                       children: [
                         Text(
-                          widget.userData.description,
+                          widget.userData.description ?? "",
                           textAlign: TextAlign.start,
                           style: TextStyle(
                             fontFamily: "Body",
@@ -223,13 +246,14 @@ class _TodoDetailsScreenState extends State<TodoDetailsScreen> {
                           ),
                         ),
                         SizedBox(height: 20.sp),
-                        widget.userData.image != null
-                            ? Container(
-                                alignment: Alignment.center,
-                                height: 350.sp,
-                                child: Image.file(image!),
-                              )
-                            : const SizedBox(),
+                        if (image != null)
+                          Container(
+                            alignment: Alignment.center,
+                            height: 350.sp,
+                            child: Image.file(image!),
+                          )
+                        else
+                          const SizedBox(height: 1),
                         SizedBox(height: 20.sp),
                       ],
                     ),

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:todo_list_app/model/date_model.dart';
+import '../model/date_model.dart';
 
 class DatePickerController {
   final DateModel dateModel = DateModel();

@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:todo_list_app/controller/todo_bloc/todo_bloc.dart';
-import 'package:todo_list_app/model/date_model.dart';
-import 'package:todo_list_app/view/widgets/filter_todo.dart';
-import 'package:todo_list_app/view/todo_add_delete_edit/add_todo.dart';
-import 'package:todo_list_app/view/widgets/custom_icon_size.dart';
-import 'package:todo_list_app/view/widgets/todo_box.dart';
+import '../../controller/todo_bloc/todo_bloc.dart';
+import '../../model/date_model.dart';
+import '../widgets/filter_todo.dart';
+import '../todo_add_delete_edit/add_todo.dart';
+import '../widgets/custom_icon_size.dart';
+import '../widgets/todo_box.dart';
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
+  final TodoBloc todoBloc;
+  const HomeScreen({super.key, required this.todoBloc});
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -27,7 +28,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final todoBloc = context.read<TodoBloc>();
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
@@ -87,9 +87,7 @@ class _HomeScreenState extends State<HomeScreen> {
             padding: EdgeInsets.only(left: 24.sp, right: 24.sp, bottom: 10.sp),
             child: BlocBuilder<TodoBloc, TodoState>(
               builder: (context, state) {
-                print('Current UI State: ${state.status}');
                 if (state.status == TodoStatus.loading) {
-                  print('Rendering Loading Indicator');
                   return Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.center,
@@ -103,8 +101,6 @@ class _HomeScreenState extends State<HomeScreen> {
                     ],
                   );
                 } else if (state.status == TodoStatus.success) {
-                  print(
-                      'Rendering Todos List with ${state.userData?.length} items');
                   return state.userData!.isEmpty
                       ? Center(
                           heightFactor: 0.03.sh,
@@ -142,6 +138,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                         "formatedDate": formatedDate,
                                         "index": i,
                                         "formatedDeadLine": formatedDeadLine,
+                                        "todoBloc": widget.todoBloc,
                                       },
                                     );
                                   },
@@ -168,8 +165,11 @@ class _HomeScreenState extends State<HomeScreen> {
             barrierColor: Colors.transparent,
             isScrollControlled: true,
             context: context,
-            builder: (context) {
-              return const AddTodo();
+            builder: (newContext) {
+              return BlocProvider.value(
+                value: widget.todoBloc,
+                child: const AddTodo(),
+              );
             },
           );
         },

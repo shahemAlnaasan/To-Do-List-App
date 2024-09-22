@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:todo_list_app/controller/todo_bloc/todo_bloc.dart';
-import 'package:todo_list_app/view/widgets/custom_icon_size.dart';
+import '../../controller/todo_bloc/todo_bloc.dart';
+import 'custom_icon_size.dart';
 
 class FilterTodo extends StatefulWidget {
   const FilterTodo({super.key});

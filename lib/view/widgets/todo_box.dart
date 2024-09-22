@@ -2,8 +2,8 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:todo_list_app/model/user_data/user_data.dart';
-import 'package:todo_list_app/view/widgets/overLay_deadLine.dart';
+import '../../model/user_data/user_data.dart';
+import 'deadLine_overLay.dart';
 
 class TodoBox extends StatefulWidget {
   final UserData userData;
@@ -84,7 +84,7 @@ class _TodoBoxState extends State<TodoBox> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                            widget.userData.title,
+                            widget.userData.title ?? "",
                             style: TextStyle(
                               fontFamily: "Body",
                               color: Colors.white,
@@ -110,7 +110,7 @@ class _TodoBoxState extends State<TodoBox> {
                       width: 270.sp,
                       height: 40.sp,
                       child: Text(
-                        widget.userData.description,
+                        widget.userData.description ?? "",
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
                         textAlign: TextAlign.start,

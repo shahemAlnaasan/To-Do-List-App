@@ -4,12 +4,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:todo_list_app/controller/date_picker_controller.dart';
-import 'package:todo_list_app/controller/todo_bloc/todo_bloc.dart';
-import 'package:todo_list_app/model/date_model.dart';
-import 'package:todo_list_app/model/user_data/user_data.dart';
-import 'package:todo_list_app/view/widgets/custom_button.dart';
-import 'package:todo_list_app/view/widgets/custom_text_form_todo.dart';
+import '../../controller/date_picker_controller.dart';
+import '../../controller/todo_bloc/todo_bloc.dart';
+import '../../model/date_model.dart';
+import '../../model/user_data/user_data.dart';
+import '../widgets/custom_button.dart';
+import '../widgets/custom_text_form_todo.dart';
 
 class AddTodo extends StatefulWidget {
   const AddTodo({super.key});
@@ -230,6 +230,7 @@ class _AddTodoState extends State<AddTodo> {
                       BlocProvider.of<TodoBloc>(context)
                           .add(AddTodosEvent(userData: userData));
 
+                      // ignore: use_build_context_synchronously
                       Navigator.pop(context);
                     },
                   ),

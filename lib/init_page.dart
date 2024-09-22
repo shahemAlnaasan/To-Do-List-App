@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:todo_list_app/controller/auth_bloc/auth_bloc.dart';
-import 'package:todo_list_app/controller/todo_bloc/todo_bloc.dart';
-import 'package:todo_list_app/view/screens/auth_screens/sign_in_screen.dart';
-import 'package:todo_list_app/view/screens/home_screen.dart';
+import 'controller/auth_bloc/auth_bloc.dart';
+import 'controller/todo_bloc/todo_bloc.dart';
+import 'view/screens/auth_screens/sign_in_screen.dart';
+import 'view/screens/home_screen.dart';
 
 class InitPage extends StatelessWidget {
-  const InitPage({super.key});
+  final AuthBloc authBloc;
+  final TodoBloc todoBloc;
+  const InitPage({super.key, required this.authBloc, required this.todoBloc});
 
   @override
   Widget build(BuildContext context) {
@@ -16,13 +18,25 @@ class InitPage extends StatelessWidget {
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(
-              builder: (context) => const HomeScreen(),
+              builder: (context) => BlocProvider.value(
+                value: todoBloc,
+                child: HomeScreen(
+                  todoBloc: todoBloc,
+                ),
+              ),
             ),
           );
         } else if (state.status == AuthStatus.unAuthenticated) {
           Navigator.pushReplacement(
             context,
-            MaterialPageRoute(builder: (context) => const SignInScreen()),
+            MaterialPageRoute(
+              builder: (context) => BlocProvider.value(
+                value: authBloc,
+                child: SignInScreen(
+                  todoBloc: todoBloc,
+                ),
+              ),
+            ),
           );
         }
       },

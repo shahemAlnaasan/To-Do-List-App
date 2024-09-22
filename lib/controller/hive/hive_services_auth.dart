@@ -1,6 +1,7 @@
 import 'package:bcrypt/bcrypt.dart';
+import 'package:flutter/foundation.dart';
 import 'package:hive/hive.dart';
-import 'package:todo_list_app/model/user_info/user_info.dart';
+import '../../model/user_info/user_info.dart';
 import 'package:uuid/uuid.dart';
 
 class HiveServices {
@@ -109,7 +110,9 @@ class HiveServices {
 
       return true;
     } catch (e) {
-      print('Error logging out: $e');
+      if (kDebugMode) {
+        print('Error logging out: $e');
+      }
       return false;
     }
   }

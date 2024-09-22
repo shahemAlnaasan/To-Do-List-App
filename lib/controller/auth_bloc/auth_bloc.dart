@@ -1,8 +1,9 @@
 import 'package:bcrypt/bcrypt.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:todo_list_app/controller/hive/hive_services_auth.dart';
-import 'package:todo_list_app/model/user_info/user_info.dart';
+import '../hive/hive_services_auth.dart';
+import '../../model/user_info/user_info.dart';
 import 'package:uuid/uuid.dart';
 
 part 'auth_event.dart';
@@ -83,7 +84,9 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         );
       }
     } catch (e) {
-      print("Error during login: $e");
+      if (kDebugMode) {
+        print("Error during login: $e");
+      }
       emit(
         state.copyWith(
           status: AuthStatus.authError,

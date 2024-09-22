@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:todo_list_app/controller/auth_bloc/auth_bloc.dart';
-import 'package:todo_list_app/view/widgets/custom_button.dart';
-import 'package:todo_list_app/view/widgets/custom_icon_size.dart';
+import '../../controller/auth_bloc/auth_bloc.dart';
+import '../widgets/custom_button.dart';
+import '../widgets/custom_icon_size.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});

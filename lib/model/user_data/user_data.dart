@@ -5,13 +5,13 @@ part 'user_data.g.dart';
 @HiveType(typeId: 1)
 class UserData {
   @HiveField(0)
-  String title;
+  String? title;
 
   @HiveField(1)
-  String description;
+  String? description;
 
   @HiveField(2)
-  DateTime creatingDate;
+  DateTime? creatingDate;
 
   @HiveField(3)
   DateTime? deadline;

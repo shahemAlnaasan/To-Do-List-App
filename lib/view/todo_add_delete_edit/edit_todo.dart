@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -15,17 +14,22 @@ import 'package:todo_list_app/view/widgets/custom_text_form_todo.dart';
 class EditTodo extends StatefulWidget {
   final UserData userData;
   final int index;
-  const EditTodo({super.key, required this.userData, required this.index});
+
+  const EditTodo({
+    super.key,
+    required this.userData,
+    required this.index,
+  });
 
   @override
   State<EditTodo> createState() => _EditTodoState();
 }
 
 class _EditTodoState extends State<EditTodo> {
-  TextEditingController titleController = TextEditingController();
-  TextEditingController descriptionController = TextEditingController();
-  TextEditingController imageNameController = TextEditingController();
-  TextEditingController deadLineController = TextEditingController();
+  TextEditingController? titleController;
+  TextEditingController? descriptionController;
+  TextEditingController? imageNameController;
+  TextEditingController? deadLineController;
   DatePickerController? datePickerController = DatePickerController();
 
   final FocusNode titleFocusNode = FocusNode();
@@ -37,20 +41,32 @@ class _EditTodoState extends State<EditTodo> {
 
   @override
   void initState() {
+    super.initState();
+
     titleController = TextEditingController(text: widget.userData.title);
     descriptionController =
         TextEditingController(text: widget.userData.description);
 
-    DateTime? deadLine = widget.userData.deadline;
-    String deadLineformetted = DateModel().formateDate(deadLine);
-    deadLineController = TextEditingController(text: deadLineformetted);
+    DateTime? deadline = widget.userData.deadline;
+    String? formattedDeadline = DateModel().formateDate(deadline);
+    deadLineController = TextEditingController(text: formattedDeadline);
 
     if (widget.userData.image != null) {
       image = File(widget.userData.image!);
       imageNameController =
-          TextEditingController(text: image!.uri.pathSegments.last);
+          TextEditingController(text: image?.uri.pathSegments.last);
+    } else {
+      imageNameController = TextEditingController();
     }
-    super.initState();
+  }
+
+  @override
+  void dispose() {
+    titleController?.dispose();
+    descriptionController?.dispose();
+    imageNameController?.dispose();
+    deadLineController?.dispose();
+    super.dispose();
   }
 
   final ImagePicker picker = ImagePicker();
@@ -62,7 +78,7 @@ class _EditTodoState extends State<EditTodo> {
     if (pickedFile != null) {
       setState(() {
         image = File(pickedFile.path);
-        imageNameController.text = pickedFile.name;
+        imageNameController?.text = pickedFile.name;
       });
     }
   }
@@ -74,12 +90,10 @@ class _EditTodoState extends State<EditTodo> {
       final XFile? pickedFile =
           await picker.pickImage(source: ImageSource.camera);
       if (pickedFile != null) {
-        setState(
-          () {
-            image = File(pickedFile.path);
-            imageNameController.text = pickedFile.name;
-          },
-        );
+        setState(() {
+          image = File(pickedFile.path);
+          imageNameController?.text = pickedFile.name;
+        });
       }
     } else {
       return;
@@ -121,6 +135,7 @@ class _EditTodoState extends State<EditTodo> {
 
   @override
   Widget build(BuildContext context) {
+    final todoBloc = context.read<TodoBloc>();
     return Container(
         width: 375.sp,
         height: 722.sp,
@@ -173,10 +188,10 @@ class _EditTodoState extends State<EditTodo> {
                       controller: isDateChanged
                           ? datePickerController!.dateController
                           : deadLineController,
-                      hintColor: deadLineController.text.isEmpty
+                      hintColor: deadLineController!.text.isEmpty
                           ? const Color.fromARGB(112, 255, 255, 255)
                           : Colors.white,
-                      color: deadLineController.text.isEmpty
+                      color: deadLineController!.text.isEmpty
                           ? const Color.fromARGB(112, 255, 255, 255)
                           : Colors.white,
                       readOnly: true,
@@ -185,7 +200,7 @@ class _EditTodoState extends State<EditTodo> {
                         "icons/calendar.png",
                         color: (isDateChanged
                                     ? datePickerController!.dateController.text
-                                    : deadLineController.text)
+                                    : deadLineController!.text)
                                 .isEmpty
                             ? const Color.fromARGB(112, 255, 255, 255)
                             : Colors.white,
@@ -195,7 +210,7 @@ class _EditTodoState extends State<EditTodo> {
                             datePickerController?.selectDate(context);
                         if (selectedDate != null) {
                           setState(() {
-                            deadlinePicked = selectedDate as Future<DateTime?>?;
+                            deadlinePicked = selectedDate;
                             isDateChanged = true;
                           });
                         }
@@ -208,10 +223,10 @@ class _EditTodoState extends State<EditTodo> {
                     height: 48.sp,
                     child: CustomTextFormTodo(
                       controller: imageNameController,
-                      hintColor: imageNameController.text.isEmpty
+                      hintColor: imageNameController?.text == null
                           ? const Color.fromARGB(112, 255, 255, 255)
                           : Colors.white,
-                      color: imageNameController.text == ""
+                      color: imageNameController?.text == null
                           ? const Color.fromARGB(112, 255, 255, 255)
                           : Colors.white,
                       onTap: () {
@@ -221,7 +236,7 @@ class _EditTodoState extends State<EditTodo> {
                       hint: 'Add Image (Optional)',
                       suffixIcon: Image.asset(
                         "icons/image.png",
-                        color: imageNameController.text.isEmpty
+                        color: imageNameController?.text == null
                             ? const Color.fromARGB(112, 255, 255, 255)
                             : Colors.white,
                       ),
@@ -233,9 +248,15 @@ class _EditTodoState extends State<EditTodo> {
                     color: Colors.white,
                     textColor: const Color(0xffF79E89),
                     onTap: () async {
-                      final title = titleController.text;
+                      final String? title =
+                          titleController?.text.isEmpty == true
+                              ? null
+                              : titleController!.text;
 
-                      final description = descriptionController.text;
+                      final String? description =
+                          descriptionController?.text.isEmpty == true
+                              ? null
+                              : descriptionController!.text;
 
                       final DateTime? deadline =
                           await deadlinePicked ?? widget.userData.deadline;
@@ -256,13 +277,10 @@ class _EditTodoState extends State<EditTodo> {
                         deadline: deadline,
                         image: imagePath,
                       );
-                      // ignore: use_build_context_synchronously
-                      context.read<TodoBloc>().add(
-                            EditTodosEvent(
-                                userData: userData, index: widget.index),
-                          );
+                      todoBloc.add(
+                        EditTodosEvent(userData: userData, index: widget.index),
+                      );
 
-                      // ignore: use_build_context_synchronously
                       Navigator.pop(context);
                     },
                   ),

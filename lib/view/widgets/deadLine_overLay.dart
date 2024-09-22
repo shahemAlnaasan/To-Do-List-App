@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:todo_list_app/model/user_data/user_data.dart';
+import '../../model/user_data/user_data.dart';
 
 class DeadLineOverLay extends StatelessWidget {
   final UserData userData;

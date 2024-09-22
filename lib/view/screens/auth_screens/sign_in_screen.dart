@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:todo_list_app/controller/auth_bloc/auth_bloc.dart';
-import 'package:todo_list_app/view/screens/home_screen.dart';
-import 'package:todo_list_app/view/widgets/custom_button.dart';
-import 'package:todo_list_app/view/widgets/custom_progress_indecator.dart';
-import 'package:todo_list_app/view/widgets/custom_text_form.dart';
-import 'package:todo_list_app/view/widgets/logo.dart';
+import '../../../controller/auth_bloc/auth_bloc.dart';
+import '../../../controller/todo_bloc/todo_bloc.dart';
+import '../../widgets/custom_button.dart';
+import '../../widgets/custom_progress_indecator.dart';
+import '../../widgets/custom_text_form.dart';
+import '../../widgets/logo.dart';
 
 class SignInScreen extends StatefulWidget {
-  const SignInScreen({super.key});
+  final TodoBloc todoBloc;
+  const SignInScreen({super.key, required this.todoBloc});
 
   @override
   State<SignInScreen> createState() => _SignInScreenState();
@@ -123,8 +124,10 @@ class _SignInScreenState extends State<SignInScreen> {
                         SnackBar(content: Text(state.message)),
                       );
                     } else if (state.status == AuthStatus.authenticated) {
-                      Navigator.of(context).pushReplacement(MaterialPageRoute(
-                          builder: (context) => const HomeScreen()));
+                      Navigator.of(context).pushReplacementNamed(
+                        "homePage",
+                        arguments: {"todoBloc": widget.todoBloc},
+                      );
                     }
                   },
                   builder: (context, state) {

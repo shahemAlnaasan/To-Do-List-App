@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:todo_list_app/controller/todo_bloc/todo_bloc.dart';
-import 'package:todo_list_app/view/widgets/custom_button.dart';
+import '../../controller/todo_bloc/todo_bloc.dart';
+import '../widgets/custom_button.dart';
 
 class DeleteTodo extends StatelessWidget {
   final int index;
-  const DeleteTodo({super.key, required this.index});
+  final TodoBloc todoBloc;
+  const DeleteTodo({super.key, required this.index, required this.todoBloc});
 
   @override
   Widget build(BuildContext context) {
@@ -17,11 +17,9 @@ class DeleteTodo extends StatelessWidget {
         children: [
           CustomButton(
             onTap: () {
-              context.read<TodoBloc>().add(DeleteTodosEvent(index: index));
-              Navigator.of(context).pushNamedAndRemoveUntil(
-                'homePage',
-                (route) => false,
-              );
+              todoBloc.add(DeleteTodosEvent(index: index));
+              Navigator.pop(context);
+              Navigator.pop(context);
             },
             title: "Delete TODO",
             color: Colors.white,

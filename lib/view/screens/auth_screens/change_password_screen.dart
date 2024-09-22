@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:todo_list_app/controller/auth_bloc/auth_bloc.dart';
-import 'package:todo_list_app/view/widgets/custom_progress_indecator.dart';
-import 'package:todo_list_app/view/widgets/custom_text_form.dart';
-import 'package:todo_list_app/view/widgets/logo.dart';
+import '../../../controller/auth_bloc/auth_bloc.dart';
+import '../../widgets/custom_progress_indecator.dart';
+import '../../widgets/custom_text_form.dart';
+import '../../widgets/logo.dart';
 
 class ChangePasswordScreen extends StatefulWidget {
   final String? boxName;
